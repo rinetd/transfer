@@ -5,7 +5,7 @@ ARCNAME = $(PROJECT)-$(VERSION)-$(GOOS)-$(GOARCH)
 all: release-all
 
 release:
-	env CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(FLAGS) -ldflags='-s -w -X ver.Version=$(VERSION)' -o build/$(GOOS)-$(GOARCH)/$(PROJECT)$(EXT)
+	env CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(FLAGS) -ldflags='-s -w -X github.com/rinetd/transfer/version.Version=$(VERSION)' -o build/$(GOOS)-$(GOARCH)/$(PROJECT)$(EXT)
 	tar czf build/$(ARCNAME).tar.gz -C build/$(GOOS)-$(GOARCH)/ $(PROJECT)$(EXT)
 
 .PHONY: release-all

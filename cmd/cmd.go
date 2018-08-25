@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/rinetd/transfer/codec"
-	ver "github.com/rinetd/transfer/version"
+	"github.com/rinetd/transfer/version"
 	"github.com/urfave/cli"
 )
 
@@ -26,7 +26,7 @@ func Run() error {
 	transfer -f src.json  /data/dest.yaml    output: /data/dest.yaml
 	transfer -f -s src.json dest.yaml        output: dest.yaml
 	transfer -f -t toml src.json             output: src.toml`
-	app.Version = ver.Version
+	app.Version = version.Version
 	app.Action = func(c *cli.Context) {
 		Parse(c)
 	}
