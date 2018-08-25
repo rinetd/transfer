@@ -49,7 +49,7 @@ deploy:
   draft: false
   prerelease: ${PRE_RELEASE}
   file_glob: true
-  file: artifacts/*.tar.gz
+  file: build/*.tar.gz
   skip_cleanup: true
   on:
     tags: true
