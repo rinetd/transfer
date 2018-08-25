@@ -40,11 +40,14 @@ docker build -t rientd/transfer .
 
 ### examples
 
-convert main.yml to main.json
-
+Convert data/main.yml TO data/main.json
 ```
-$ transfer -t json main.yaml
-$ transfer main.yaml main.json
+$ transfer -f data/main.yaml        (default output `json` format)
+$ transfer -f data/main.yaml data/main.json
+$ transfer -f -t json data/main.yaml
+$ transfer -f -s data/main.yaml     (default output `json` format)
+$ transfer -f -s data/main.yaml -t json 
+$ transfer -f -s data/main.yaml -t data/main.json 
 ```
 ```yaml
 Author:

@@ -65,10 +65,20 @@ func Parse(c *cli.Context) error {
 	// fmt.Println(in, conf.InputType, out, conf.OutputType)
 	conf.Setin()
 	conf.Setout()
+
 	switch c.NArg() {
 	case 0:
-		cli.ShowAppHelp(c)
-		return nil
+		if conf.InputType == codec.FileTypeUnknown {
+			cli.ShowAppHelp(c)
+			return nil
+		}
+		// 未指定输出，根据输入确定默认输出
+		if conf.OutputType == codec.FileTypeUnknown {
+			conf.OutputType = codec.FileTypeJSON
+			filename := strings.TrimSuffix(in, conf.InputType)
+			out = filename + conf.OutputType
+		}
+
 		// if conf.InputType == codec.FileTypeUnknown {
 		// 	conf.InputType = codec.FileTypeJSON
 		// 	conf.OutputType = codec.FileTypeYAML
@@ -133,7 +143,10 @@ func Parse(c *cli.Context) error {
 
 	default:
 	}
-
+	if out == conf.OutputType {
+		filename := strings.TrimSuffix(in, conf.InputType)
+		out = filename + conf.OutputType
+	}
 	// fmt.Println(in, out)
 	src, err := os.Open(in)
 	if err != nil {
