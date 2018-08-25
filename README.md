@@ -7,6 +7,11 @@ Supported formats HCL ⇄ JSON ⇄ YAML⇄TOML⇄XML⇄plist⇄pickle⇄properti
 ```
 $ go get github.com/rinetd/transfer
 ```
+### Download
+
+```
+https://github.com/rinetd/transfer/releases
+```
 
 ### usage
 
