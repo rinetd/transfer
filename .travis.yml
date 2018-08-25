@@ -37,7 +37,7 @@ before_deploy:
   - |
       export BODY="Detailed release information can be found at [CHANGELOG.md $TRAVIS_TAG](https://github.com/rinetd/transfer/blob/master/CHANGELOG.md#$(echo $TRAVIS_TAG | sed -e 's/\.//g' | tr '[:upper:]' '[:lower:]'))"
       export PRE_RELEASE=false
-      make
+      make VERSION=${TRAVIS_TAG}
       if [[ "$TRAVIS_TAG" =~ -.+ ]]; then
         export PRE_RELEASE=true
       fi
