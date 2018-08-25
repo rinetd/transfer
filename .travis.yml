@@ -1,0 +1,57 @@
+---
+language: go
+go:
+  - 1.10.x
+services:
+  - docker
+
+before_install:
+  - go get -u github.com/kardianos/govendor
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew install upx; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo apt install xz-utils;
+      curl -L https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz > upx.tar.xz;
+      tar -xf upx.tar.xz;
+      chmod +x upx-3.94-amd64_linux/upx;
+      sudo mv upx-3.94-amd64_linux/upx /usr/local/bin/upx;
+      rm -rf upx-3.94-amd64_linux upx.tar.xz;
+    fi
+
+script:
+  - govendor sync
+  - govendor install
+  - go test -v
+  - go build -ldflags '-s -w'
+  - upx transfer
+
+  - ./transfer -h || echo "Shows the help"
+
+  - ./transfer || echo "This should be failed"
+
+
+after_success:
+  - mv transfer transfer-`uname -s`-x86_64
+
+
+before_deploy:
+  - |
+      export BODY="Detailed release information can be found at [CHANGELOG.md $TRAVIS_TAG](https://github.com/rinetd/transfer/blob/master/CHANGELOG.md#$(echo $TRAVIS_TAG | sed -e 's/\.//g' | tr '[:upper:]' '[:lower:]'))"
+      export PRE_RELEASE=false
+      make
+      if [[ "$TRAVIS_TAG" =~ -.+ ]]; then
+        export PRE_RELEASE=true
+      fi
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  name: $TRAVIS_TAG
+  body: ${BODY}
+  draft: false
+  prerelease: ${PRE_RELEASE}
+  file_glob: true
+  file: artifacts/*.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
+
+branch: master
