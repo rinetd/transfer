@@ -1,3 +1,7 @@
+## [v1.0.2](#v102)
+Fixes:
+* cmdline zero fixes
+
 ## [v1.0.1](#v101)
 Features:
 * add artifacts
