@@ -1,8 +1,9 @@
 # transfer [![GoDoc](https://godoc.org/github.com/rinetd/transfer?status.png)](https://godoc.org/github.com/rinetd/transfer)[![Build Status](https://travis-ci.org/rinetd/transfer.svg?branch=master)](https://travis-ci.org/rinetd/transfer)
 
-[中文文档](README.zh.md)
-Converts from one encoding to another. 
-Supported formats HCL ⇄ JSON ⇄ YAML⇄TOML⇄XML⇄plist⇄pickle⇄properties ... 
+* 支持全平台 Windows linux mac
+* 自动检测转换文件格式
+* 支持多种格式相互转换 HCL ⇄ JSON ⇄ YAML⇄TOML⇄XML⇄plist⇄pickle⇄properties ... 
+
 ### install
 
 ```
@@ -46,7 +47,9 @@ docker build -t rientd/transfer .
 
 ### examples
 
-Convert data/main.yml TO data/main.json
+#### yaml格式转换为json
+将 ./data/main.yml 转换到 ./data/main.json
+以下几种命名格式是等价的
 ```
 $ transfer -f data/main.yaml        (default output `json` format)
 $ transfer -f data/main.yaml data/main.json
@@ -102,7 +105,12 @@ theme: hueman
 	"theme": "hueman"
 }
 ```
-
+#### 其他格式转换: 
+json -> hcl
 ```hcl
 $ transfer main.json main.hcl
+```
+yaml -> toml
+```toml
+$ transfer main.yaml main.toml
 ```
