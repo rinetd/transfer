@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/printer"
 	"github.com/hydrogen18/stalecucumber"
+	"github.com/magiconair/properties"
 	"github.com/rinetd/jy/utils"
 	msgpack "gopkg.in/vmihailenco/msgpack.v2"
 )
@@ -137,6 +138,17 @@ func Unmarshal(input []byte, t string) (interface{}, error) {
 		// 	data, err = utils.ConvertMapsToStringMaps(data)
 		// }
 		return utils.FixYAML(data), nil
+
+	case FileTypeProperties:
+		p := properties.NewProperties()
+		var err error
+		if p, err = properties.Load(input, properties.UTF8); err != nil {
+			return nil, err
+		}
+		if err = p.Decode(&data); err != nil {
+			return nil, err
+		}
+		return nil, err
 	default:
 		err = fmt.Errorf("unsupported input FileType")
 	}
@@ -168,7 +180,7 @@ func Marshal(data interface{}, outputFileType string) ([]byte, error) {
 	case FileTypeXML:
 		// fmt.Println("marshal xml")
 		// result, err = xml.MarshalIndent(&data, "", "    ")
-		jsonValue, err := jsonMarshal(data)
+		jsonValue, err := jsonMarshal(&data)
 		if err != nil {
 			return nil, err
 		}
@@ -214,6 +226,8 @@ func Marshal(data interface{}, outputFileType string) ([]byte, error) {
 		buf := new(bytes.Buffer)
 		err = toml.NewEncoder(buf).Encode(data)
 		result = buf.Bytes()
+	case FileTypeProperties:
+
 	default:
 		err = fmt.Errorf("unsupported output FileType")
 	}

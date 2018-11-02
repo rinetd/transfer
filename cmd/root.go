@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -19,13 +20,13 @@ func Run() error {
 	app.Name = `Transfer`
 	app.Email = "https://github.com/rinetd"
 	app.Usage = `Translate YAML, JSON, TOML, HCL, XML, properties ...
-
-	 transfer [-f] [-s input.yaml] [-t output.json] /path/to/input.yaml [/path/to/output.json]`
-	app.UsageText = `
-	transfer -f ~/src.yaml         (default) output: src.json
-	transfer -f src.json  /data/dest.yaml    output: /data/dest.yaml
-	transfer -f -s src.json dest.yaml        output: dest.yaml
-	transfer -f -t toml src.json             output: src.toml`
+	 transfer [-f] [-s input.yaml] [-o output.json] /path/to/input.yaml [/path/to/output.json]`
+	app.UsageText = ` Default output format: json
+	$ transfer -f data/input.yaml           (output "./data/input.json")
+	$ transfer -f data/input.yaml out.json  (output "./out.json")
+	$ transfer -f -s data/input.yaml -o hcl (output "./data/input.hcl")
+	$ transfer -f -s data/input.yaml -o /root/out.toml (output "/root/out.toml")
+	$ transfer -f -o yaml data/input.json   (output "data/input.yaml")`
 	app.Version = version.Version
 	app.Action = func(c *cli.Context) {
 		Parse(c)
@@ -35,12 +36,12 @@ func Run() error {
 		cli.StringFlag{
 			Name: "s, input",
 			// Value: "yaml",
-			Usage: "input Type: json, yaml, toml, xml",
+			Usage: "input Type: json, yaml, toml, hcl, xml",
 		},
 		cli.StringFlag{
-			Name: "t, output",
+			Name: "o, output",
 			// Value: "json",
-			Usage: "output Type or file : json, yaml, toml, xml",
+			Usage: "output file : json, yaml, toml, hcl, xml",
 		},
 		cli.BoolFlag{
 			Name:  "f,force",
@@ -60,7 +61,7 @@ func Parse(c *cli.Context) error {
 	// conf := Transform{}
 	in = c.String("s")
 	conf.InputType = codec.Typ(in)
-	out = c.String("t")
+	out = c.String("o")
 	conf.OutputType = codec.Typ(out)
 	// fmt.Println(in, conf.InputType, out, conf.OutputType)
 	conf.Setin()
@@ -75,8 +76,8 @@ func Parse(c *cli.Context) error {
 		// 未指定输出，根据输入确定默认输出
 		if conf.OutputType == codec.FileTypeUnknown {
 			conf.OutputType = codec.FileTypeJSON
-			filename := strings.TrimSuffix(in, conf.InputType)
-			out = filename + conf.OutputType
+			filename := strings.TrimSuffix(in, path.Ext(in))
+			out = filename + "." + conf.OutputType
 		}
 
 		// if conf.InputType == codec.FileTypeUnknown {
@@ -106,8 +107,8 @@ func Parse(c *cli.Context) error {
 			// 未指定输出，根据输入确定默认输出
 			if conf.OutputType == codec.FileTypeUnknown {
 				conf.OutputType = codec.FileTypeJSON
-				filename := strings.TrimSuffix(in, conf.InputType)
-				out = filename + conf.OutputType
+				filename := strings.TrimSuffix(in, path.Ext(in))
+				out = filename + "." + conf.OutputType
 			}
 
 		} else {
@@ -144,8 +145,8 @@ func Parse(c *cli.Context) error {
 	default:
 	}
 	if out == conf.OutputType {
-		filename := strings.TrimSuffix(in, conf.InputType)
-		out = filename + conf.OutputType
+		filename := strings.TrimSuffix(in, path.Ext(in))
+		out = filename + "." + conf.OutputType
 	}
 	// fmt.Println(in, out)
 	src, err := os.Open(in)

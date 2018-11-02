@@ -34,8 +34,8 @@ func Test_typ(t *testing.T) {
 var input = []byte(`{
 	"Author": {
 		"email": "rinetd@163.com",
-		"github": "rinetd",
-		"name": "rinetd",
+		"github": true,
+		"age": 10,
 		"rss": "rss.xml"
 	}}`)
 
@@ -45,4 +45,15 @@ func TestUnmarshal(t *testing.T) {
 	fmt.Println(data)
 	fmt.Println(xml.Marshal(data))
 
+}
+
+func Test_marshal(t *testing.T) {
+	var data interface{}
+	json.Unmarshal(input, &data)
+	fmt.Println(data)
+	d, err := Marshal(data, FileTypeHCL)
+	if err != nil {
+
+	}
+	fmt.Println(string(d))
 }

@@ -21,7 +21,7 @@ https://github.com/rinetd/transfer/releases
 ```
 usage:
 
-	transfer [-f] [-s input.yaml] [-t output.json] /path/to/input.yaml [/path/to/output.json]
+	transfer [-f] [-s input.yaml] [-o output.json] /path/to/input.yaml [/path/to/output.json]
 
 Converts from one encoding to another. Supported formats (and their file extensions):
 
@@ -42,20 +42,20 @@ Converts from one encoding to another. Supported formats (and their file extensi
 
 ```
 # build the transfer image
-docker build -t rientd/transfer .
+docker build -o rientd/transfer .
 ```
 
 
 ### examples
 
-Convert data/main.yml TO data/main.json
+Convert data/input.yml TO data/input.json
+$ transfer -f data/input.yaml           (output "./data/input.json")
+
 ```
-$ transfer -f data/main.yaml        (default output `json` format)
-$ transfer -f data/main.yaml data/main.json
-$ transfer -f -t json data/main.yaml
-$ transfer -f -s data/main.yaml     (default output `json` format)
-$ transfer -f -s data/main.yaml -t json 
-$ transfer -f -s data/main.yaml -t data/main.json 
+$ transfer -f data/input.yaml out.json  (output "./out.json")
+$ transfer -f -s data/input.yaml -o /root/out.toml (output "/root/out.toml")
+$ transfer -f -s data/input.yaml -o hcl (output "./data/input.hcl")
+$ transfer -f -o yaml data/input.json   (output "data/input.yaml")
 ```
 ```yaml
 Author:
@@ -70,7 +70,7 @@ menu:
     Weight: -102
   - Identifier: tags
     Name: tags
-    Pre: <i class='fa fa-tags'></i>
+    Pre: <i class='fa fa-oags'></i>
     URL: /tags/
     Weight: -101
 theme: hueman
@@ -95,7 +95,7 @@ theme: hueman
 			{
 				"Identifier": "tags",
 				"Name": "tags",
-				"Pre": "<i class='fa fa-tags'></i>",
+				"Pre": "<i class='fa fa-oags'></i>",
 				"URL": "/tags/",
 				"Weight": -101
 			}
